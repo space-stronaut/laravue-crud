@@ -48,13 +48,15 @@ class PlayerController extends Controller
             "number" => $request->number
         ]);
 
-        $file = $request->file('photo');
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
 
-        $imgName = rand().'.'.$file->getClientOriginalExtension();
+            $imgName = rand().'.'.$file->getClientOriginalExtension();
 
-        $players->photo = $imgName;
-        
-        $file->move('img', $imgName);
+            $file->move('img', $imgName);
+
+            $players->photo = $imgName;
+        }
 
         $players->save();
 
@@ -96,15 +98,47 @@ class PlayerController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // request()->validate([
+        //     "name" => "required",
+        //     "number" => "required|unique:players|min:2",
+        // ]);
+
+
+        // $file = $request->file('photo');
+
+        // $imgName = rand().'.'.$file->getClientOriginalExtension();
+
+        // $file->move('img', $imgName);
+
+        // $players = Player::find($id)->update([
+        //     "name" => $request->name,
+        //     "number" => $request->number,
+        //     "photo" => $request->photo 
+        // ]);
+
+
+        // return response()->json($players);
         request()->validate([
             "name" => "required",
-            "number" => "required|numeric|min:2"
+            "number" => "required|min:2",
         ]);
 
-        $players = Player::find($id)->update([
-            "name" => $request->name,
-            "number" => $request->number
-        ]);
+        $players = Player::findorFail($id);
+
+        $players->name = $request->get('name');
+        $players->number = $request->get('number');
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+
+            $imgName = rand().'.'.$file->getClientOriginalExtension();
+
+            $file->move('img', $imgName);
+
+            $players->photo = $imgName;
+        }
+
+        $players->save();
 
         return response()->json($players);
     }
@@ -127,6 +161,23 @@ class PlayerController extends Controller
     public function search($name)
     {
         $players = Player::where('name', 'like', '%'.$name.'%')->get();
+
+        return response()->json($players);
+    }
+    public function updatePhoto(Request $request, $id)
+    {
+        $players = Player::find($id);
+    
+        $file = $request->photo;
+
+        $imgName = rand().'.'.$file;
+
+        $players->photo = $imgName;
+        
+        $request->file('photo')->move('img', $imgName);
+
+        $players->save();
+        $players->update(['photo' => $imgName]);
 
         return response()->json($players);
     }

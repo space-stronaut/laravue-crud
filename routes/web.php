@@ -24,5 +24,6 @@ Route::post('/player/create', [PlayerController::class, 'store']);
 Route::get('/player/show/{id}', [PlayerController::class, 'show']);
 Route::get('/player/edit/{id}', [PlayerController::class, 'edit']);
 Route::get('/player/cari/{worker:name}', [PlayerController::class, 'search']);
-Route::put('/player/update/{id}', [PlayerController::class, 'update']);
+Route::post('/player/update/{id}', [PlayerController::class, 'update']);
+Route::put('/player/updatePhoto/{id}', [PlayerController::class, 'updatePhoto']);
 Route::delete('/player/delete/{id}', [PlayerController::class, 'destroy']);

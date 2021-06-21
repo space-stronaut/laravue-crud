@@ -1992,7 +1992,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2001,7 +2000,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         number: null,
         photo: null
       },
-      validation: []
+      validation: [],
+      loading: false
     };
   },
   methods: {
@@ -2020,14 +2020,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 data.append('name', _this.forms.name);
                 data.append('number', _this.forms.number);
                 data.append('photo', _this.forms.photo);
-                _context.next = 8;
+                console.log(data);
+                _this.loading = true;
+                _context.next = 10;
                 return axios.post('/player/create', data);
 
-              case 8:
+              case 10:
                 response = _context.sent;
 
                 if (response.status === 200) {
                   alert("Pegawai Berhasil Ditambahkan");
+                  console.log(data);
+                  _this.loading = false;
 
                   _this.$router.push({
                     name: "index"
@@ -2035,20 +2039,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }
 
                 console.log(_this.forms.photo);
-                _context.next = 16;
+                _context.next = 18;
                 break;
 
-              case 13:
-                _context.prev = 13;
+              case 15:
+                _context.prev = 15;
                 _context.t0 = _context["catch"](1);
                 _this.validation = _context.t0.response.data.errors;
 
-              case 16:
+              case 18:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[1, 13]]);
+        }, _callee, null, [[1, 15]]);
       }))();
     },
     preview: function preview(e) {
@@ -2098,14 +2102,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       forms: {
         name: "",
-        number: null
+        number: null,
+        photo: null
       },
-      validation: []
+      validation: [],
+      loading: false
     };
   },
   mounted: function mounted() {
@@ -2126,13 +2136,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context.sent;
+                _this.loading = true;
 
                 if (response.status === 200) {
                   _this.forms.name = response.data.name;
                   _this.forms.number = response.data.number;
+                  _this.forms.photo = response.data.photo;
+                  _this.loading = false;
                 }
 
-              case 4:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -2144,42 +2157,52 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var response;
+        var data, response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 e.preventDefault();
                 _context2.prev = 1;
-                _context2.next = 4;
-                return axios.put('/player/update/' + _this2.$route.params.id, _this2.forms);
+                data = new FormData();
+                data.append('name', _this2.forms.name);
+                data.append('number', _this2.forms.number);
+                data.append('photo', _this2.forms.photo);
+                _this2.loading = true;
+                _context2.next = 9;
+                return axios.post("/player/update/".concat(_this2.$route.params.id), data);
 
-              case 4:
+              case 9:
                 response = _context2.sent;
 
                 if (response.status === 200) {
                   alert("Pegawai Berhasil Diupdate");
+                  _this2.loading = false;
 
                   _this2.$router.push({
                     name: "index"
                   });
                 }
 
-                _context2.next = 11;
+                _context2.next = 16;
                 break;
 
-              case 8:
-                _context2.prev = 8;
+              case 13:
+                _context2.prev = 13;
                 _context2.t0 = _context2["catch"](1);
                 _this2.validation = _context2.t0.response.data.errors;
 
-              case 11:
+              case 16:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[1, 8]]);
+        }, _callee2, null, [[1, 13]]);
       }))();
+    },
+    preview: function preview(e) {
+      this.forms.photo = e.target.files[0];
+      console.log(e.target.files[0]);
     }
   }
 });
@@ -2251,12 +2274,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       players: [],
       query: "",
-      searching: false
+      searching: false,
+      loading: false
     };
   },
   mounted: function mounted() {
@@ -2395,10 +2421,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      player: []
+      player: {
+        name: "",
+        number: null,
+        photo: null
+      },
+      index: 0
     };
   },
   mounted: function mounted() {
@@ -2419,15 +2453,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context.sent;
-                _this.player = response.data;
+                _this.player.name = response.data.name;
+                _this.player.number = response.data.number;
+                _this.player.photo = response.data.photo;
 
-              case 4:
+              case 6:
               case "end":
                 return _context.stop();
             }
           }
         }, _callee);
       }))();
+    },
+    increment: function increment(e) {
+      if (this.index >= this.player.number) {
+        e.preventDefault();
+      } else {
+        this.index++;
+      }
     }
   }
 });
@@ -39511,7 +39554,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container mx-auto" }, [
-    _vm._v("\n    " + _vm._s(_vm.forms) + "\n    "),
     _c("div", { staticClass: "card p-4", staticStyle: { width: "35rem" } }, [
       _c(
         "form",
@@ -39594,26 +39636,23 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _vm._m(0)
+          _c("div", { staticClass: "mb-3" }, [
+            _c(
+              "button",
+              { staticClass: "btn btn-success", attrs: { type: "submit" } },
+              [
+                _vm.loading
+                  ? _c("span", [_vm._v("Loading")])
+                  : _c("span", [_vm._v("Submit")])
+              ]
+            )
+          ])
         ]
       )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "mb-3" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-success", attrs: { type: "submit" } },
-        [_vm._v("Submit")]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -39638,86 +39677,110 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container mx-auto" }, [
     _c("div", { staticClass: "card p-4", staticStyle: { width: "35rem" } }, [
-      _c("form", { on: { submit: _vm.update } }, [
-        _c("div", { staticClass: "mb-3" }, [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.forms.name,
-                expression: "forms.name"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text" },
-            domProps: { value: _vm.forms.name },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+      _c(
+        "form",
+        {
+          attrs: { enctype: "multipart/form-data" },
+          on: { submit: _vm.update }
+        },
+        [
+          _c("div", { staticClass: "mb-3" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.forms.name,
+                  expression: "forms.name"
                 }
-                _vm.$set(_vm.forms, "name", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _vm.validation.name
-            ? _c("label", { staticClass: "text-danger", attrs: { for: "" } }, [
-                _vm._v(_vm._s(_vm.validation.name[0]))
-              ])
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "mb-3" }, [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.forms.number,
-                expression: "forms.number"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "number", maxlength: "2" },
-            domProps: { value: _vm.forms.number },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text" },
+              domProps: { value: _vm.forms.name },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.forms, "name", $event.target.value)
                 }
-                _vm.$set(_vm.forms, "number", $event.target.value)
               }
-            }
-          }),
+            }),
+            _vm._v(" "),
+            _vm.validation.name
+              ? _c(
+                  "label",
+                  { staticClass: "text-danger", attrs: { for: "" } },
+                  [_vm._v(_vm._s(_vm.validation.name[0]))]
+                )
+              : _vm._e()
+          ]),
           _vm._v(" "),
-          _vm.validation.number
-            ? _c("label", { staticClass: "text-danger", attrs: { for: "" } }, [
-                _vm._v(_vm._s(_vm.validation.number[0]))
-              ])
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _vm._m(0)
-      ])
+          _c("div", { staticClass: "mb-3" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.forms.number,
+                  expression: "forms.number"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "number", maxlength: "2" },
+              domProps: { value: _vm.forms.number },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.forms, "number", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm.validation.number
+              ? _c(
+                  "label",
+                  { staticClass: "text-danger", attrs: { for: "" } },
+                  [_vm._v(_vm._s(_vm.validation.number[0]))]
+                )
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "mb-3" }, [
+            _c("input", {
+              staticClass: "form-control",
+              attrs: { type: "file", name: "", id: "" },
+              on: { change: _vm.preview }
+            }),
+            _vm._v(" "),
+            _vm.validation.photo
+              ? _c(
+                  "label",
+                  { staticClass: "text-danger", attrs: { for: "" } },
+                  [_vm._v(_vm._s(_vm.validation.photo[0]))]
+                )
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "mb-3" }, [
+            _c(
+              "button",
+              { staticClass: "btn btn-success", attrs: { type: "submit" } },
+              [
+                _vm.loading
+                  ? _c("span", [_vm._v("Loading")])
+                  : _c("span", [_vm._v("Submit")])
+              ]
+            )
+          ])
+        ]
+      )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "mb-3" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-success", attrs: { type: "submit" } },
-        [_vm._v("Submit")]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -39744,6 +39807,7 @@ var render = function() {
     "div",
     { staticClass: "container mx-auto" },
     [
+      _vm._v("\n    " + _vm._s(_vm.index) + "\n    "),
       _c(
         "router-link",
         { staticClass: "btn btn-primary my-5", attrs: { to: "/player/add" } },
@@ -39817,10 +39881,15 @@ var render = function() {
                 _c("td", [_vm._v(_vm._s(player.number))]),
                 _vm._v(" "),
                 _c("td", [
-                  _c("img", {
-                    staticStyle: { "max-width": "20%" },
-                    attrs: { src: "/img/" + player.photo }
-                  })
+                  player.photo
+                    ? _c("img", {
+                        staticStyle: { "max-width": "20%" },
+                        attrs: { src: "/img/" + player.photo }
+                      })
+                    : _c("img", {
+                        staticStyle: { "max-width": "20%" },
+                        attrs: { src: "/img/24022287.png" }
+                      })
                 ]),
                 _vm._v(" "),
                 _c(
@@ -39926,9 +39995,21 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container mx-auto" }, [
+    _vm._v("\n    " + _vm._s(_vm.index) + "\n    "),
+    _c("img", {
+      staticStyle: { "max-width": "20%" },
+      attrs: { src: "/img/" + _vm.player.photo }
+    }),
+    _vm._v(" "),
     _c("h1", [_vm._v(_vm._s(_vm.player.name))]),
     _vm._v(" "),
-    _c("p", [_vm._v(_vm._s(_vm.player.number))])
+    _c("p", [_vm._v(_vm._s(_vm.player.number))]),
+    _vm._v(" "),
+    _c(
+      "button",
+      { staticClass: "btn btn-warning", on: { click: _vm.increment } },
+      [_vm._v("Increment")]
+    )
   ])
 }
 var staticRenderFns = []

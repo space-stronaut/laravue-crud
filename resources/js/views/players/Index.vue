@@ -1,5 +1,6 @@
 <template>
   <div class="container mx-auto">
+      {{index}}
       <router-link class="btn btn-primary my-5" to="/player/add">Tambah</router-link>
 
         <div v-if="searching" class="alert alert-warning" role="alert">
@@ -30,7 +31,8 @@
                   <td>{{ player.name }}</td>
                   <td>{{ player.number }}</td>
                   <td>
-                      <img :src="'/img/' + player.photo" style="max-width:20%" />
+                      <img v-if="player.photo" :src="'/img/' + player.photo" style="max-width:20%" />
+                      <img v-else :src="'/img/24022287.png'" style="max-width:20%" />
                   </td>
                   <td>
                       <router-link :to="{name : 'show', params : { id : player.id }}" class="btn btn-primary">Show</router-link>
@@ -51,6 +53,7 @@ export default {
             players: [],
             query : "",
             searching : false,
+            loading : false,
         }
     },
     mounted () {
@@ -77,7 +80,6 @@ export default {
         async cari(){
             try {
                 let response = await axios.get('/player/cari/' + this.query);
-
                 if (response.status === 200) {
                     this.players = response.data
                     this.searching = true

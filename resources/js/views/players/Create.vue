@@ -1,6 +1,5 @@
 <template>
   <div class="container mx-auto">
-      {{forms}}
       <div class="card p-4" style="width : 35rem">
           <form @submit="create" enctype="multipart/form-data">
               <div class="mb-3">
@@ -16,7 +15,7 @@
                   <input type="file" v-on:change="preview" class="form-control">
               </div>
               <div class="mb-3">
-                  <button type="submit" class="btn btn-success">Submit</button>
+                  <button type="submit" class="btn btn-success"><span v-if="loading">Loading</span><span v-else>Submit</span></button>
               </div>
           </form>
       </div>
@@ -32,7 +31,8 @@ export default {
                 number : null,
                 photo : null
             },
-            validation : []
+            validation : [],
+            loading : false
         }
     },
     methods: {
@@ -43,10 +43,14 @@ export default {
                 data.append('name', this.forms.name)
                 data.append('number', this.forms.number)
                 data.append('photo', this.forms.photo)
+                console.log(data)
+                this.loading = true
                 let response = await axios.post('/player/create', data)
 
                 if (response.status === 200) {
                     alert("Pegawai Berhasil Ditambahkan")
+                    console.log(data)
+                    this.loading = false
 
                     this.$router.push({name : "index"})
                 }   
